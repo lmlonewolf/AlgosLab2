@@ -57,6 +57,7 @@ public:
 		track->data->print('f');
 	}
 
+
 	void new_front(Node& node) {
 		size++;
 		if (!first) {
@@ -73,6 +74,7 @@ public:
 		Node* node = new Node(track);
 		new_front(*node);
 	}
+
 
 	void new_last(Node& node) {
 		size++;
@@ -110,6 +112,37 @@ public:
 				track->next = nullptr;
 				track->prev = nullptr;
 
+				delete track;
+				size--;
+				
+				return true;
+			}
+			track = track->next;
+		}
+		return false;
+	}
+
+	bool del_track(Track& target) {
+		Node* track = first;
+
+		while (track != nullptr) {
+			if (track->data == &target) {
+
+				if (track->prev)
+					track->prev->next = track->next;
+				if (track->next)
+					track->next->prev = track->prev;
+				if (track == first)
+					first = track->next;
+				if (track == last)
+					last = track->prev;
+
+				track->next = nullptr;
+				track->prev = nullptr;
+
+				delete track;
+				size--;
+
 				return true;
 			}
 			track = track->next;
@@ -121,7 +154,7 @@ public:
 		Node* track = first;
 
 		while (track != nullptr) {
-			if (track == &target) {
+			if (track->data == target.data) {
 
 				if (track->prev)
 					track->prev->next = track->next;
@@ -157,6 +190,7 @@ int main() {
 	p.new_last(t2);
 	p.new_last(t3);
 
+	p.del_track(t2);
 
 	p.print();
 
