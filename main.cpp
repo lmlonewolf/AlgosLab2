@@ -1,4 +1,5 @@
 #include "Header.h"
+#include <utility>
 
 int select = 0;
 
@@ -112,7 +113,6 @@ public:
 				track->next = nullptr;
 				track->prev = nullptr;
 
-				delete track;
 				size--;
 				
 				return true;
@@ -140,7 +140,6 @@ public:
 				track->next = nullptr;
 				track->prev = nullptr;
 
-				delete track;
 				size--;
 
 				return true;
@@ -168,14 +167,31 @@ public:
 				track->next = nullptr;
 				track->prev = nullptr;
 
-				delete track;
 				size--;
-
 				return true;
 			}
 			track = track->next;
 		}
 		return false;
+	}
+
+
+	void shuffle(void) {
+		for (int i = 0; i < size; i++) {
+			Node* current = first;
+			for (int j = 0; j < randint(0, size - 1 - i); j++)
+				current = current->next;
+			new_last(*(current->data));
+			size--;
+			if (current->next)
+				current->next->prev = current->prev;
+			if (current->prev)
+				current->prev->next = current->next;
+			if (current == first)
+				first = current->next;
+
+			delete current;
+		}
 	}
 };
 
@@ -190,11 +206,12 @@ int main() {
 	p.new_last(t2);
 	p.new_last(t3);
 
-	p.del_track(t2);
+	p.print();
+
+	p.shuffle();
 
 	p.print();
 
-	menu_selector();
 
 	return 0;
 }
