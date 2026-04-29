@@ -59,39 +59,30 @@ public:
 	}
 
 
-	void new_front(Node& node) {
-		size++;
-		if (!first) {
-			first = &node;
-			last = &node;
-			return;
-		}
-			node.next = first;
-			first->prev = &node;
-			first = &node;
-	}
-
 	void new_front(Track& track) {
 		Node* node = new Node(track);
-		new_front(*node);
-	}
-
-
-	void new_last(Node& node) {
 		size++;
-		if (!last) {
-			first = &node;
-			last = &node;
+		if (!first) {
+			first = node;
+			last = node;
 			return;
 		}
-		node.prev = last;
-		last->next = &node;
-		last = &node;
+		node->next = first;
+		first->prev = node;
+		first = node;
 	}
 
 	void new_last(Track& track) {
 		Node* node = new Node(track);
-		new_last(*node);
+		size++;
+		if (!last) {
+			first = node;
+			last = node;
+			return;
+		}
+		node->prev = last;
+		last->next = node;
+		last = node;
 	}
 
 
