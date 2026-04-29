@@ -1,12 +1,12 @@
 #include "Header.h"
 #include <conio.h>
 
+size_t menu_size = 8;
 
 void menu(int select) {
 	system("cls");
-	std::string options[] = {"First", "Last", "Next", "Prev", "Print playlist", "Repeat track", "Repeat playlist", "New track", "Delete track"};
-
-	for (int i = 0; i < 9; i++) { 
+	std::string options[] = {"Print playlist", "Play", "Next", "Prev", "Repeat track", "Repeat playlist", "New track", "Delete track"};
+	for (int i = 0; i < menu_size; i++) {
 		if (i == select)
 			std::cout << "-> " << options[i] << std::endl;
 		else
@@ -20,9 +20,9 @@ int move(int& select) {
 	if (key == 224) { 
 		key = _getch();
 		if (key == 72) 
-			select = (select > 0) ? select - 1 : 8;
+			select = (select > 0) ? select - 1 : menu_size - 1;
 		if (key == 80) 
-			select = (select < 8) ? select + 1 : 0;
+			select = (select < menu_size - 1) ? select + 1 : 0;
 		return 0;
 	}
 	else if (key == 13)
@@ -31,7 +31,7 @@ int move(int& select) {
 }
 
 
-void menu_selector() {
+void menu_selector(Playlist& PL) {
 	int select = 0;
 
 	while (1) {
@@ -39,10 +39,12 @@ void menu_selector() {
 		if (move(select)) {
 			switch (select) {
 			case 0:
-				// First
+				// Print playlist
+				PL.print();
+				system("pause");
 				break;
 			case 1:
-				// Last
+				// Play
 				break;
 			case 2:
 				// Next
@@ -51,18 +53,15 @@ void menu_selector() {
 				// Prev
 				break;
 			case 4:
-				// Print playlist
-				break;
-			case 5:
 				// Repeat track
 				break;
-			case 6:
+			case 5:
 				// Repeat playlist
 				break;
-			case 7:
+			case 6:
 				// New track
 				break;
-			case 8:
+			case 7:
 				// Delete track
 				break;
 			}
