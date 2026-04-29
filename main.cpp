@@ -2,13 +2,12 @@
 
 int select = 0;
 
+
 struct Track {
 	std::string name;
 	unsigned time;
 	std::string style;
 	unsigned short rate;
-	Track* prev = nullptr;
-	Track* next = nullptr;
 
 	Track(std::string name, unsigned time, std::string style, unsigned short rate) : name {name}, time {time}, style {style}, rate {rate} {}
 
@@ -27,50 +26,77 @@ struct Track {
 };
 
 
+struct Node {
+	Track* data;
+	Node* prev = nullptr;
+	Node* next = nullptr;
+
+	Node(Track& data) : data {&data} {}
+	Node(Track* data) : data {data} {}
+};
+
+
 class Playlist {
-	Track* first = nullptr;
-	Track* last = nullptr;
+	Node* first = nullptr;
+	Node* last = nullptr;
+	size_t size = 0;
 	bool repeat = false;
 
 public:
+
 	void print() {
-		Track* track = first;
+		Node* track = first;
 		std::cout << std::endl;
-		while (track != nullptr) {
-			track->print('f');
-			track->print('t');
+		while (track->next) {
+			track->data->print('f');
+			track->data->print('t');
 			track = track->next;
 		}
-		track->print('f');
+		track->data->print('f');
+		track->data->print('t');
+		track->data->print('f');
+	}
+
+	void new_front(Node& node) {
+		size++;
+		if (!first) {
+			first = &node;
+			last = &node;
+			return;
+		}
+			node.next = first;
+			first->prev = &node;
+			first = &node;
 	}
 
 	void new_front(Track& track) {
-		if (!first) {
-			first = &track;
-			last = &track;
+		Node* node = new Node(track);
+		new_front(*node);
+	}
+
+	void new_last(Node& node) {
+		size++;
+		if (!last) {
+			first = &node;
+			last = &node;
 			return;
 		}
-			track.next = first;
-			first->prev = &track;
-			first = &track;
+		node.prev = last;
+		last->next = &node;
+		last = &node;
 	}
 
 	void new_last(Track& track) {
-		if (!last) {
-			first = &track;
-			last = &track;
-			return;
-		}
-		track.prev = last;
-		last->next = &track;
-		last = &track;
+		Node* node = new Node(track);
+		new_last(*node);
 	}
 
+
 	bool del_track(std::string track_name) {
-		Track* track = first;
+		Node* track = first;
 
 		while (track != nullptr) {
-			if (track->name == track_name) {
+			if (track->data->name == track_name) {
 
 				if (track->prev)
 				track->prev->next = track->next;
@@ -91,8 +117,8 @@ public:
 		return false;
 	}
 
-	bool del_track(Track& target) {
-		Track* track = first;
+	bool del_track(Node& target) {
+		Node* track = first;
 
 		while (track != nullptr) {
 			if (track == &target) {
@@ -108,6 +134,9 @@ public:
 
 				track->next = nullptr;
 				track->prev = nullptr;
+
+				delete track;
+				size--;
 
 				return true;
 			}
@@ -130,6 +159,8 @@ int main() {
 
 
 	p.print();
+
+	menu_selector();
 
 	return 0;
 }
