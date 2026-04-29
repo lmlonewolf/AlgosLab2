@@ -6,3 +6,5 @@
 
 
 void menu_selector(void);
+
+int randint(int min, int max);
