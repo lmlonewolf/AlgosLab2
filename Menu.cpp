@@ -1,14 +1,14 @@
 #include "Header.h"
 #include <conio.h>
 
+
 void menu(int select) {
-	char** options = NULL;
 	system("cls");
-	std::string options[] = { "First", "Last", "Next", "Prev", "Print playlist", "Repeat track", "Repeat playlist", "New track", "Delete track" };
+	std::string options[] = {"First", "Last", "Next", "Prev", "Print playlist", "Repeat track", "Repeat playlist", "New track", "Delete track"};
 
 	for (int i = 0; i < 9; i++) { 
 		if (i == select)
-			std::cout << "->\t" << options[i] << std::endl;
+			std::cout << "-> " << options[i] << std::endl;
 		else
 			std::cout << options[i] << std::endl;
 	}
