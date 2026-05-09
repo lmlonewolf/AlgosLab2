@@ -28,12 +28,14 @@ struct Node {
 
 
 class Playlist {
+public:
 	Node* first = nullptr;
 	Node* last = nullptr;
 	size_t size = 0;
-	bool repeat = false;
+	bool repeat_pl = false;
+	bool repeat_tr = false;
 
-public:
+
 	void print(void);
 
 	void new_front(Track& track);
@@ -51,5 +53,7 @@ public:
 
 
 void menu_selector(Playlist& PL);
+
+int move(int& select);
 
 int randint(int min, int max);
