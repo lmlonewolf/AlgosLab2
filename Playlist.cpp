@@ -60,6 +60,9 @@ void Playlist::new_front(Track& track) {
 	node->next = first;
 	first->prev = node;
 	first = node;
+	sum_time += track.time;
+	sum_rate += track.rate;
+
 }
 
 void Playlist::new_last(Track& track) {
@@ -73,6 +76,8 @@ void Playlist::new_last(Track& track) {
 	node->prev = last;
 	last->next = node;
 	last = node;
+	sum_time += track.time;
+	sum_rate += track.rate;
 }
 
 
@@ -95,6 +100,8 @@ bool Playlist::del_track(std::string track_name) {
 			track->prev = nullptr;
 
 			size--;
+			sum_time -= track->data->time;
+			sum_rate -= track->data->rate;
 
 			return true;
 		}
@@ -122,7 +129,8 @@ bool Playlist::del_track(Track& target) {
 			track->prev = nullptr;
 
 			size--;
-
+			sum_time -= track->data->time;
+			sum_rate -= track->data->rate;
 			return true;
 		}
 		track = track->next;
@@ -149,6 +157,8 @@ bool Playlist::del_track(Node& target) {
 			track->prev = nullptr;
 
 			size--;
+			sum_time -= track->data->time;
+			sum_rate -= track->data->rate;
 			return true;
 		}
 		track = track->next;

@@ -32,6 +32,8 @@ struct Node {
 
 class Playlist {
 	size_t size = 0;
+	size_t sum_time = 0;
+	size_t sum_rate = 0;
 public:
 	Node* first = nullptr;
 	Node* last = nullptr;
