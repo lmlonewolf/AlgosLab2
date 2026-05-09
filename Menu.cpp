@@ -35,7 +35,7 @@ void menu(int select, Playlist& PL, Node* current) {
 		current->data->print();
 		break;
 	case Page::REP_TR:
-		if (PL.repeat_pl)
+		if (PL.repeat_tr)
 			std::cout << std::endl << "The TRACK will BE repeated.";
 		else
 			std::cout << std::endl << "The TRACK will NOT repeat itself.";
@@ -78,24 +78,22 @@ void menu_selector(Playlist& PL) {
 				break;
 			case 3:
 				// Prev
-				if (current->prev)
-					current = current->prev;
+				if (!PL.repeat_tr) {
+					if (current->prev)
+						current = current->prev;
+					else if (PL.repeat_pl)
+						current = PL.last;
+				}
 				page = Page::TRACK;
 				break;
 			case 4:
 				// Repeat track
-				if (PL.repeat_tr)
-					PL.repeat_tr == false;
-				else
-					PL.repeat_tr == true;
+				PL.repeat_tr = !PL.repeat_tr;
 				page = Page::REP_TR;
 				break;
 			case 5:
 				// Repeat playlist
-				if (PL.repeat_pl)
-					PL.repeat_pl == false;
-				else
-					PL.repeat_pl == true;
+				PL.repeat_pl = !PL.repeat_pl;
 				page = Page::REP_PL;
 				break;
 			case 6:
