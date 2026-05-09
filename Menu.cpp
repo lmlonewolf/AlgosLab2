@@ -7,19 +7,20 @@ enum class Page {
 	TRACK,
 	REP_TR,
 	REP_PL,
+	SHUFFLE,
 	NEW,
 	DEL,
 	NOTHING
 };
 
-unsigned short menu_size = 8;
+unsigned short menu_size = 9;
 Page page = Page::NOTHING;
 
 
 
 void menu(int select, Playlist& PL, Node* current) {
 	system("cls");
-	std::string options[] = {"Print playlist", "Play", "Next", "Prev", "Repeat track", "Repeat playlist", "New track", "Delete track"};
+	std::string options[] = {"Print playlist", "Play", "Next", "Prev", "Repeat track", "Repeat playlist", "Shuffle playlist", "New track", "Delete track"};
 	for (int i = 0; i < menu_size; i++) {
 		if (i == select)
 			std::cout << "-> " << options[i] << std::endl;
@@ -36,15 +37,19 @@ void menu(int select, Playlist& PL, Node* current) {
 		break;
 	case Page::REP_TR:
 		if (PL.repeat_tr)
-			std::cout << std::endl << "The TRACK will BE repeated.";
+			std::cout << std::endl << "The TRACK will BE repeated." << std::endl;
 		else
-			std::cout << std::endl << "The TRACK will NOT repeat itself.";
+			std::cout << std::endl << "The TRACK will NOT repeated." << std::endl;
 		break;
 	case Page::REP_PL:
 		if (PL.repeat_pl)
-			std::cout << std::endl << "The PLAYLIST will BE repeated.";
+			std::cout << std::endl << "The PLAYLIST will BE repeated." << std::endl;
 		else
-			std::cout << std::endl << "The PLAYLIST will NOT repeat itself.";
+			std::cout << std::endl << "The PLAYLIST will NOT repeated." << std::endl;
+		break;
+	case Page::SHUFFLE:
+		std::cout << std::endl << "The PLAYLIST was SHUFFLED." << std::endl;
+		PL.print();
 		break;
 	}
 }
@@ -97,9 +102,15 @@ void menu_selector(Playlist& PL) {
 				page = Page::REP_PL;
 				break;
 			case 6:
-				// New track
+				// Suffle
+				PL.shuffle();
+				current = PL.first;
+				page = Page::SHUFFLE;
 				break;
 			case 7:
+				// New track
+				break;
+			case 8:
 				// Delete track
 				break;
 			}
