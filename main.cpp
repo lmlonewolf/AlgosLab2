@@ -9,12 +9,12 @@ int main() {
 	Track t2 = Track("world", 2, "kpop", 4);
 	Track t3 = Track("mix", 3, "rock", 10);
 
-	Playlist p;
+	Playlist p, n;
 	p.new_last(t1);
 	p.new_last(t2);
 	p.new_last(t3);
 
-	menu_selector(p);
+	menu_selector(n);
 
 
 	return 0;

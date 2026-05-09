@@ -1,9 +1,8 @@
 #include "Header.h"
 
 
-
+Track::Track(void) {};
 Track::Track(std::string name, unsigned time, std::string style, unsigned short rate) : name{ name }, time{ time }, style{ style }, rate{ rate } {}
-
 void Track::print(char type) {
 	if (type == 'f')
 		std::cout << '+' << std::string(32, '-') << '+' << std::string(8, '-') << '+' << std::string(16, '-') << '+' << std::string(8, '-') << '+' << std::endl;
@@ -18,8 +17,9 @@ void Track::print(void) {
 }
 
 
-
-
+Node::Node(void) {
+	this->data = new Track();
+}
 Node::Node(Track& data) : data{ &data } {}
 Node::Node(Track* data) : data{ data } {}
 
@@ -27,15 +27,25 @@ Node::Node(Track* data) : data{ data } {}
 
 void Playlist::print() {
 	Node* track = first;
+	if (!track) {
+		track = new Node();
+		std::cout << std::endl;
+		track->data->print('f');
+		std::cout << std::format("|{:<32}|{:<8}|{:<16}|{:<8}|", "Name", "Time", "Style", "Rating") << std::endl;
+		track->data->print('f');
+		delete track->data;
+		delete track;
+		return;
+	}
 	std::cout << std::endl;
+	track->data->print('f');
+	std::cout << std::format("|{:<32}|{:<8}|{:<16}|{:<8}|", "Name", "Time", "Style", "Rating") << std::endl;
 	while (track->next) {
 		track->data->print('f');
 		track->data->print('t');
 		track = track->next;
 	}
-	track->data->print('f');
-	track->data->print('t');
-	track->data->print('f');
+	track->data->print();
 }
 
 

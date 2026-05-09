@@ -10,6 +10,7 @@ enum class Page {
 	SHUFFLE,
 	NEW,
 	DEL,
+	EMPTY,
 	NOTHING
 };
 
@@ -37,19 +38,22 @@ void menu(int select, Playlist& PL, Node* current) {
 		break;
 	case Page::REP_TR:
 		if (PL.repeat_tr)
-			std::cout << std::endl << "The TRACK will BE repeated." << std::endl;
+			std::cout << std::endl << "TRACK will BE repeated." << std::endl;
 		else
-			std::cout << std::endl << "The TRACK will NOT repeated." << std::endl;
+			std::cout << std::endl << "TRACK will NOT repeated." << std::endl;
 		break;
 	case Page::REP_PL:
 		if (PL.repeat_pl)
-			std::cout << std::endl << "The PLAYLIST will BE repeated." << std::endl;
+			std::cout << std::endl << "PLAYLIST will BE repeated." << std::endl;
 		else
-			std::cout << std::endl << "The PLAYLIST will NOT repeated." << std::endl;
+			std::cout << std::endl << "PLAYLIST will NOT repeated." << std::endl;
 		break;
 	case Page::SHUFFLE:
-		std::cout << std::endl << "The PLAYLIST was SHUFFLED." << std::endl;
+		std::cout << std::endl << "PLAYLIST was SHUFFLED." << std::endl;
 		PL.print();
+		break;
+	case Page::EMPTY:
+		std::cout << std::endl << "PLAYLIST is EMPTY." << std::endl;
 		break;
 	}
 }
@@ -68,44 +72,68 @@ void menu_selector(Playlist& PL) {
 				break;
 			case 1:
 				// Play
-				current = PL.first;
-				page = Page::TRACK;
+				if (PL.first == nullptr)
+					page = Page::EMPTY;
+				else {
+					current = PL.first;
+					page = Page::TRACK;
+				}
 				break;
 			case 2:
 				// Next
-				if (!PL.repeat_tr) {
-					if (current->next)
-						current = current->next;
-					else if (PL.repeat_pl)
-						current = PL.first;
+				if (PL.first == nullptr)
+					page = Page::EMPTY;
+				else {
+					if (!PL.repeat_tr) {
+						if (current->next)
+							current = current->next;
+						else if (PL.repeat_pl)
+							current = PL.first;
+					}
+					page = Page::TRACK;
 				}
-				page = Page::TRACK;
 				break;
 			case 3:
 				// Prev
-				if (!PL.repeat_tr) {
-					if (current->prev)
-						current = current->prev;
-					else if (PL.repeat_pl)
-						current = PL.last;
+				if (PL.first == nullptr)
+					page = Page::EMPTY;
+				else {
+					if (!PL.repeat_tr && PL.first) {
+						if (current->prev)
+							current = current->prev;
+						else if (PL.repeat_pl)
+							current = PL.last;
+					}
+					page = Page::TRACK;
 				}
-				page = Page::TRACK;
 				break;
 			case 4:
 				// Repeat track
-				PL.repeat_tr = !PL.repeat_tr;
-				page = Page::REP_TR;
+				if (PL.first == nullptr)
+					page = Page::EMPTY;
+				else {
+					PL.repeat_tr = !PL.repeat_tr;
+					page = Page::REP_TR;
+				}
 				break;
 			case 5:
 				// Repeat playlist
-				PL.repeat_pl = !PL.repeat_pl;
-				page = Page::REP_PL;
+				if (PL.first == nullptr)
+					page = Page::EMPTY;
+				else {
+					PL.repeat_pl = !PL.repeat_pl;
+					page = Page::REP_PL;
+				}
 				break;
 			case 6:
 				// Suffle
-				PL.shuffle();
-				current = PL.first;
-				page = Page::SHUFFLE;
+				if (PL.first == nullptr)
+					page = Page::EMPTY;
+				else {
+					PL.shuffle();
+					current = PL.first;
+					page = Page::SHUFFLE;
+				}
 				break;
 			case 7:
 				// New track

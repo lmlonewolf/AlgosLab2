@@ -11,7 +11,9 @@ struct Track {
 	std::string style;
 	unsigned short rate;
 
+	Track(void);
 	Track(std::string name, unsigned time, std::string style, unsigned short rate);
+
 	void print(char type);
 	void print(void);
 };
@@ -22,16 +24,17 @@ struct Node {
 	Node* prev = nullptr;
 	Node* next = nullptr;
 
+	Node(void);
 	Node(Track& data);
 	Node(Track* data);
 };
 
 
 class Playlist {
+	size_t size = 0;
 public:
 	Node* first = nullptr;
 	Node* last = nullptr;
-	size_t size = 0;
 	bool repeat_pl = false;
 	bool repeat_tr = false;
 
