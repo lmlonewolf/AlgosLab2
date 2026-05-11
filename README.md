@@ -331,4 +331,52 @@ std::tuple <int, int> Playlist::report(void) {
 ```
 
 ### Поиск N треков в заданном диапазоне времени
+``` cpp
+size_t start, end, target_count, count = 0;
 
+while (true) {
+	std::cout << std::endl << "Input Min Time: " << std::endl;
+	if (std::cin >> start)
+		break;
+	std::cout << std::endl << "Input error! Try again." << std::endl;
+	std::cin.clear();
+	std::cin.ignore(10000, '\n');
+}
+
+while (true) {
+	std::cout << std::endl << "Input Max Time: " << std::endl;
+	if (std::cin >> end)
+		break;
+	std::cout << std::endl << "Input error! Try again." << std::endl;
+	std::cin.clear();
+	std::cin.ignore(10000, '\n');
+}
+
+while (true) {
+	std::cout << std::endl << "Input Count of track (0 for ALL tracks): " << std::endl;
+	if (std::cin >> target_count)
+		break;
+	std::cout << std::endl << "Input error! Try again." << std::endl;
+	std::cin.clear();
+	std::cin.ignore(10000, '\n');
+}
+
+Playlist temp;
+
+Node* current = PL.first;
+for (int j = 0; j < PL.get_size(); j++) {
+	if (count == target_count && target_count != 0)
+		break;
+	if (start <= current->data->time && current->data->time <= end) {
+		temp.new_last(current->data);
+		count++;
+	}
+	current = current->next;
+}
+
+
+system("cls");
+std::cout << std::endl << "Tracks in time range." << std::endl;
+temp.print();
+temp.clear();
+```
