@@ -14,46 +14,115 @@ enum class Page {
 	NOTHING
 };
 
+const std::string options[] = { "Print playlist", "Play", "Next", "Prev", "Repeat track", "Repeat playlist", "Shuffle playlist", "New track", "Delete track" };
 unsigned short menu_size = 9;
 Page page = Page::NOTHING;
 
 
-
-void menu(int select, Playlist& PL, Node* current) {
-	system("cls");
-	std::string options[] = {"Print playlist", "Play", "Next", "Prev", "Repeat track", "Repeat playlist", "Shuffle playlist", "New track", "Delete track"};
+void print_selector(int select) {
 	for (int i = 0; i < menu_size; i++) {
 		if (i == select)
 			std::cout << "-> " << options[i] << std::endl;
 		else
 			std::cout << options[i] << std::endl;
 	}
+}
+
+
+void menu(int select, Playlist& PL, Node* current) {
+	system("cls");
 
 	switch (page) {
+	case Page::NOTHING:
+		print_selector(select);
+		break;
+
 	case Page::PLAYLIST:
+		print_selector(select);
+
 		PL.print();
 		break;
+
 	case Page::TRACK:
+		print_selector(select);
+
 		current->data->print();
 		break;
+
 	case Page::REP_TR:
+		print_selector(select);
+
 		if (PL.repeat_tr)
 			std::cout << std::endl << "TRACK will BE repeated." << std::endl;
 		else
 			std::cout << std::endl << "TRACK will NOT repeated." << std::endl;
 		break;
+
 	case Page::REP_PL:
+		print_selector(select);
+
 		if (PL.repeat_pl)
 			std::cout << std::endl << "PLAYLIST will BE repeated." << std::endl;
 		else
 			std::cout << std::endl << "PLAYLIST will NOT repeated." << std::endl;
 		break;
+
 	case Page::SHUFFLE:
+		print_selector(select);
+
 		std::cout << std::endl << "PLAYLIST was SHUFFLED." << std::endl;
 		PL.print();
 		break;
+
 	case Page::EMPTY:
+		print_selector(select);
+
 		std::cout << std::endl << "PLAYLIST is EMPTY." << std::endl;
+		break;
+
+	case Page::NEW:
+		system("cls");
+		std::string name;
+		while (true) {
+			std::cout << std::endl << "Input track name: " << std::endl;
+			if (std::cin.peek() == '\n')
+				std::cin.ignore();
+			if (std::getline(std::cin, name))
+				break;
+			std::cout << std::endl << "Input error! Try again." << std::endl;
+		}
+
+		unsigned time;
+		while (true) {
+			std::cout << std::endl << "Input track time: " << std::endl;
+			if (std::cin >> time)
+				break;
+			std::cout << std::endl << "Input error! Try again." << std::endl;
+		}
+
+		std::string style;
+		while (true) {
+			std::cout << std::endl << "Input track style: " << std::endl;
+			if (std::cin.peek() == '\n')
+				std::cin.ignore();
+			if (std::getline(std::cin, style))
+				break;
+			std::cout << std::endl << "Input error! Try again." << std::endl;
+		}
+
+		unsigned short rate;
+		while (true) {
+			std::cout << std::endl << "Input track rating: " << std::endl;
+			if (std::cin >> rate)
+				break;
+			std::cout << std::endl << "Input error! Try again." << std::endl;
+		}
+
+		PL.new_last(new Track(name, time, style, rate));
+		system("cls");
+		print_selector(select);
+		PL.print();
+		page = Page::PLAYLIST;
 		break;
 	}
 }
@@ -137,6 +206,7 @@ void menu_selector(Playlist& PL) {
 				break;
 			case 7:
 				// New track
+				page = Page::NEW;
 				break;
 			case 8:
 				// Delete track
