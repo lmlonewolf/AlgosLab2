@@ -331,4 +331,152 @@ std::tuple <int, int> Playlist::report(void) {
 ```
 
 ### Поиск N треков в заданном диапазоне времени
+``` cpp
+size_t start, end, target_count, count = 0;
+
+while (true) {
+	std::cout << std::endl << "Input Min Time: " << std::endl;
+	if (std::cin >> start)
+		break;
+	std::cout << std::endl << "Input error! Try again." << std::endl;
+	std::cin.clear();
+	std::cin.ignore(10000, '\n');
+}
+
+while (true) {
+	std::cout << std::endl << "Input Max Time: " << std::endl;
+	if (std::cin >> end)
+		break;
+	std::cout << std::endl << "Input error! Try again." << std::endl;
+	std::cin.clear();
+	std::cin.ignore(10000, '\n');
+}
+
+while (true) {
+	std::cout << std::endl << "Input Count of track (0 for ALL tracks): " << std::endl;
+	if (std::cin >> target_count)
+		break;
+	std::cout << std::endl << "Input error! Try again." << std::endl;
+	std::cin.clear();
+	std::cin.ignore(10000, '\n');
+}
+
+Playlist temp;
+
+Node* current = PL.first;
+for (int j = 0; j < PL.get_size(); j++) {
+	if (count == target_count && target_count != 0)
+		break;
+	if (start <= current->data->time && current->data->time <= end) {
+		temp.new_last(current->data);
+		count++;
+	}
+	current = current->next;
+}
+
+
+system("cls");
+std::cout << std::endl << "Tracks in time range." << std::endl;
+temp.print();
+temp.clear();
+```
+
+---
+# Также проект имеет модульную структуру
+### main.cpp - Точка входа
+### Header.h - Заголовки, структуры, классы и прототипы
+### Playlist.cpp - реализация функций классов и структур
+### Menu.cpp - Меню взаимодействия
+### base64.cpp - Функции конирования и декодирования Base64
+### rand.cpp - Функция рандома
+# Дополнительно был реализован интекрфейс с динамическим указателем
+## Пример
+```
+-> Print playlist
+Play
+Next
+Prev
+Repeat track
+Repeat playlist
+Don't repeat
+Shuffle playlist
+New track
+Delete track
+Playlist report
+Find by Time
+Save
+Load
+```
+## Реализация
+``` cpp
+int move(size_t& select, size_t size) { // Перемещение указателя
+	int key = _getch();
+	if (key == 224) {
+		key = _getch();
+		if (key == 72)
+			select = (select > 0) ? select - 1 : size - 1;
+		if (key == 80)
+			select = (select < size - 1) ? select + 1 : 0;
+		return 0;
+	}
+	else if (key == 13)
+		return 1;
+	return 0;
+}
+
+
+void menu_selector(Playlist& PL) { // обработка логики (часть)
+	size_t select = 0;
+	Node* current = PL.first;
+	while (1) {
+		menu(select, PL, current);
+		if (move(select, menu_size)) {
+			switch (select) {
+			case 0:
+				// Print playlist
+				break;
+			case 1:
+				// Play
+				break;
+			case 2:
+				// Next
+				break;
+			case 3:
+				// Prev
+				break;
+			case 4:
+				// Repeat track
+				break;
+			case 5:
+				// Repeat playlist
+				break;
+			case 6:
+				// Don't repeat
+				break;
+			case 7:
+				// Shuffle
+				break;
+			case 8:
+				// New track
+				break;
+			case 9:
+				// Delete track
+				break;
+			case 10:
+				// Playlist report
+				break;
+			case 11:
+				// Find by Time
+				break;
+			case 12:
+				// Save
+				break;
+			case 13:
+				// Load
+				break;
+			}
+		}
+	}
+}
+```
 
