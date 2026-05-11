@@ -15,12 +15,23 @@ enum class Page {
 	NOTHING
 };
 
-const std::string options[] = { "Print playlist", "Play", "Next", "Prev", "Repeat track", "Repeat playlist", "Don't repeat", "Shuffle playlist", "New track", "Delete track" };
-unsigned short menu_size = 10;
+const std::string options[] = { "Print playlist",
+	"Play",
+	"Next",
+	"Prev",
+	"Repeat track",
+	"Repeat playlist",
+	"Don't repeat",
+	"Shuffle playlist",
+	"New track",
+	"Delete track"
+};
+
+const unsigned short menu_size = 10;
 Page page = Page::NOTHING;
 
 
-void print_selector(int select) {
+void print_selector(size_t select) {
 	for (int i = 0; i < menu_size; i++) {
 		if (i == select)
 			std::cout << "\033[0;32m->\033[0m " << options[i] << std::endl;
@@ -29,8 +40,23 @@ void print_selector(int select) {
 	}
 }
 
+void print_selector(size_t select, Playlist& PL) {
 
-void menu(int select, Playlist& PL, Node* current) {
+	Node* current = PL.first;
+
+	for (int j = 0; j < PL.get_size(); j++) {
+		if (j != 0)
+			current = current->next;
+
+		if (j == select)
+			std::cout << "\033[0;32m->\033[0m " << current->data->name << std::endl;
+		else
+			std::cout << current->data->name << std::endl;
+	}
+}
+
+
+void menu(size_t select, Playlist& PL, Node* current) {
 	system("cls");
 	switch (page) {
 	case Page::NOTHING:
@@ -85,8 +111,9 @@ void menu(int select, Playlist& PL, Node* current) {
 		std::cout << std::endl << "PLAYLIST is EMPTY." << std::endl;
 		break;
 
-	case Page::NEW:
+	case Page::NEW: {
 		system("cls");
+
 		std::string name;
 		while (true) {
 			std::cout << std::endl << "Input track name: " << std::endl;
@@ -95,6 +122,10 @@ void menu(int select, Playlist& PL, Node* current) {
 			if (std::getline(std::cin, name))
 				break;
 			std::cout << std::endl << "Input error! Try again." << std::endl;
+			std::cin.clear();
+			std::cin.ignore(10000, '\n');
+
+
 		}
 
 		unsigned time;
@@ -103,6 +134,10 @@ void menu(int select, Playlist& PL, Node* current) {
 			if (std::cin >> time)
 				break;
 			std::cout << std::endl << "Input error! Try again." << std::endl;
+			std::cin.clear();
+			std::cin.ignore(10000, '\n');
+
+
 		}
 
 		std::string style;
@@ -113,6 +148,9 @@ void menu(int select, Playlist& PL, Node* current) {
 			if (std::getline(std::cin, style))
 				break;
 			std::cout << std::endl << "Input error! Try again." << std::endl;
+			std::cin.clear();
+			std::cin.ignore(10000, '\n');
+
 		}
 
 		unsigned short rate;
@@ -121,9 +159,22 @@ void menu(int select, Playlist& PL, Node* current) {
 			if (std::cin >> rate)
 				break;
 			std::cout << std::endl << "Input error! Try again." << std::endl;
+			std::cin.clear();
+			std::cin.ignore(10000, '\n');
+
 		}
 
 		PL.new_last(new Track(name, time, style, rate));
+		system("cls");
+		print_selector(select);
+		PL.print();
+		page = Page::PLAYLIST;
+		break;
+	}
+
+	case Page::DEL:
+		system("cls");
+		track_selector(PL);
 		system("cls");
 		print_selector(select);
 		PL.print();
@@ -134,11 +185,11 @@ void menu(int select, Playlist& PL, Node* current) {
 
 
 void menu_selector(Playlist& PL) {
-	int select = 0;
+	size_t select = 0;
 	Node* current = PL.first;
 	while (1) {
 		menu(select, PL, current);
-		if (move(select)) {
+		if (move(select, menu_size)) {
 			switch (select) {
 			case 0:
 				// Print playlist
@@ -203,6 +254,7 @@ void menu_selector(Playlist& PL) {
 				break;
 
 			case 6:
+				// Don't repeat
 				PL.repeat_tr = false;
 				PL.repeat_pl = false;
 				page = Page::REP_NO;
@@ -223,21 +275,35 @@ void menu_selector(Playlist& PL) {
 				break;
 			case 9:
 				// Delete track
+				page = Page::DEL;
 				break;
 			}
 		}
 	}
 }
 
+void track_selector(Playlist& PL) {
+	size_t select = 0;
+	Node* current = PL.first;
+	while (1) {
+		system("cls");
+		print_selector(select, PL);
+		if (move(select, PL.get_size())) {
+			PL.del_track(select);
+			return;
+		}
+	}
+}
 
-int move(int& select) {
+
+int move(size_t& select, size_t size) {
 	int key = _getch();
 	if (key == 224) {
 		key = _getch();
 		if (key == 72)
-			select = (select > 0) ? select - 1 : menu_size - 1;
+			select = (select > 0) ? select - 1 : size - 1;
 		if (key == 80)
-			select = (select < menu_size - 1) ? select + 1 : 0;
+			select = (select < size - 1) ? select + 1 : 0;
 		return 0;
 	}
 	else if (key == 13)

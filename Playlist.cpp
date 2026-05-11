@@ -46,6 +46,10 @@ void Playlist::print() {
 	track->data->print();
 }
 
+size_t Playlist::get_size(void) {
+	return this->size;
+}
+
 
 void Playlist::new_front(Track* track) {
 	Node* node = new Node(track);
@@ -164,6 +168,30 @@ bool Playlist::del_track(Node& target) {
 	return false;
 }
 
+bool Playlist::del_track(size_t number) {
+	if (number >= size)
+		return false;
+	Node* track = first;
+	for (int j = 0; j < number; j++)
+		track = track->next;
+
+	if (track->prev)
+		track->prev->next = track->next;
+	if (track->next)
+		track->next->prev = track->prev;
+	if (track == first)
+		first = track->next;
+	if (track == last)
+		last = track->prev;
+
+	track->next = nullptr;
+	track->prev = nullptr;
+
+	size--;
+	sum_time -= track->data->time;
+	sum_rate -= track->data->rate;
+	return true;
+}
 
 void Playlist::shuffle(void) {
 	for (int i = 0; i < size; i++) {

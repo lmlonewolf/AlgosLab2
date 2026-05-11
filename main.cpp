@@ -1,6 +1,6 @@
 #include "Header.h"
 
-int select = 0;
+size_t select = 0;
 
 
 int main() {
@@ -14,8 +14,8 @@ int main() {
 	p.new_last(t2);
 	p.new_last(t3);
 
-	menu_selector(p);
 
+	menu_selector(p);
 
 	return 0;
 }
