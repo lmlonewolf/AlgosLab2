@@ -359,7 +359,7 @@ void menu_selector(Playlist& PL) {
 				page = Page::REP_NO;
 				break;
 			case 7:
-				// Suffle
+				// Shuffle
 				if (PL.first == nullptr)
 					page = Page::EMPTY;
 				else {
