@@ -3,6 +3,8 @@
 
 Track::Track(void) {};
 Track::Track(std::string name, unsigned time, std::string style, unsigned short rate) : name{ name }, time{ time }, style{ style }, rate{ rate } {}
+
+
 void Track::print(char type) {
 	if (type == 'f')
 		std::cout << '+' << std::string(32, '-') << '+' << std::string(8, '-') << '+' << std::string(16, '-') << '+' << std::string(8, '-') << '+' << std::endl;
