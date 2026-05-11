@@ -3,5 +3,6 @@
 *.vcxproj
 *.filters
 *.user
+*.b
 out
 x64
