@@ -12,6 +12,10 @@ enum class Page {
 	NEW,
 	DEL,
 	EMPTY,
+	REPORT,
+	FIND_TIME,
+	SAVE,
+	LOAD,
 	NOTHING
 };
 
@@ -24,11 +28,16 @@ const std::string options[] = { "Print playlist",
 	"Don't repeat",
 	"Shuffle playlist",
 	"New track",
-	"Delete track"
+	"Delete track",
+	"Playlist report",
+	"Find by Time",
+	"Save",
+	"Load"
 };
 
-const unsigned short menu_size = 10;
+const unsigned short menu_size = 14;
 Page page = Page::NOTHING;
+size_t select = 0;
 
 
 void print_selector(size_t select) {
@@ -55,134 +64,207 @@ void print_selector(size_t select, Playlist& PL) {
 	}
 }
 
+void track_selector(Playlist& PL) {
+	size_t select = 0;
+	Node* current = PL.first;
+	while (true) {
+		system("cls");
+		print_selector(select, PL);
+		if (move(select, PL.get_size())) {
+			PL.del_track(select);
+			return;
+		}
+	}
+}
+
 
 void menu(size_t select, Playlist& PL, Node* current) {
 	system("cls");
 	switch (page) {
-	case Page::NOTHING:
-		print_selector(select);
-		break;
+		case Page::NOTHING:
+			print_selector(select);
+			break;
 
-	case Page::PLAYLIST:
-		print_selector(select);
+		case Page::PLAYLIST:
+			print_selector(select);
 
-		PL.print();
-		break;
+			PL.print();
+			break;
 
-	case Page::TRACK:
-		print_selector(select);
+		case Page::TRACK:
+			print_selector(select);
 
-		current->data->print();
-		break;
+			current->data->print();
+			break;
 
-	case Page::REP_TR:
-		print_selector(select);
+		case Page::REP_TR:
+			print_selector(select);
 
-		if (PL.repeat_tr)
-			std::cout << std::endl << "TRACK will BE repeated." << std::endl;
-		else
-			std::cout << std::endl << "TRACK will NOT repeated." << std::endl;
-		break;
+			if (PL.repeat_tr)
+				std::cout << std::endl << "TRACK will BE repeated." << std::endl;
+			else
+				std::cout << std::endl << "TRACK will NOT repeated." << std::endl;
+			break;
 
-	case Page::REP_PL:
-		print_selector(select);
+		case Page::REP_PL:
+			print_selector(select);
 
-		if (PL.repeat_pl)
-			std::cout << std::endl << "PLAYLIST will BE repeated." << std::endl;
-		else
-			std::cout << std::endl << "PLAYLIST will NOT repeated." << std::endl;
-		break;
+			if (PL.repeat_pl)
+				std::cout << std::endl << "PLAYLIST will BE repeated." << std::endl;
+			else
+				std::cout << std::endl << "PLAYLIST will NOT repeated." << std::endl;
+			break;
 
-	case Page::REP_NO:
-		print_selector(select);
-		std::cout << std::endl << "Repeat is disabled." << std::endl;
-		break;
+		case Page::REP_NO:
+			print_selector(select);
+			std::cout << std::endl << "Repeat is disabled." << std::endl;
+			break;
 
-	case Page::SHUFFLE:
-		print_selector(select);
+		case Page::SHUFFLE:
+			print_selector(select);
 
-		std::cout << std::endl << "PLAYLIST was SHUFFLED." << std::endl;
-		PL.print();
-		break;
+			std::cout << std::endl << "PLAYLIST was SHUFFLED." << std::endl;
+			PL.print();
+			break;
 
-	case Page::EMPTY:
-		print_selector(select);
+		case Page::EMPTY:
+			print_selector(select);
 
-		std::cout << std::endl << "PLAYLIST is EMPTY." << std::endl;
-		break;
+			std::cout << std::endl << "PLAYLIST is EMPTY." << std::endl;
+			break;
 
-	case Page::NEW: {
-		system("cls");
+		case Page::NEW: {
+			system("cls");
 
-		std::string name;
-		while (true) {
-			std::cout << std::endl << "Input track name: " << std::endl;
-			if (std::cin.peek() == '\n')
-				std::cin.ignore();
-			if (std::getline(std::cin, name))
-				break;
-			std::cout << std::endl << "Input error! Try again." << std::endl;
-			std::cin.clear();
-			std::cin.ignore(10000, '\n');
+			std::string name;
+			while (true) {
+				std::cout << std::endl << "Input track name: " << std::endl;
+				if (std::cin.peek() == '\n')
+					std::cin.ignore();
+				if (std::getline(std::cin, name))
+					break;
+				std::cout << std::endl << "Input error! Try again." << std::endl;
+				std::cin.clear();
+				std::cin.ignore(10000, '\n');
 
 
+			}
+
+			unsigned time;
+			while (true) {
+				std::cout << std::endl << "Input track time in seconds: " << std::endl;
+				if (std::cin >> time)
+					break;
+				std::cout << std::endl << "Input error! Try again." << std::endl;
+				std::cin.clear();
+				std::cin.ignore(10000, '\n');
+
+
+			}
+
+			std::string style;
+			while (true) {
+				std::cout << std::endl << "Input track style: " << std::endl;
+				if (std::cin.peek() == '\n')
+					std::cin.ignore();
+				if (std::getline(std::cin, style))
+					break;
+				std::cout << std::endl << "Input error! Try again." << std::endl;
+				std::cin.clear();
+				std::cin.ignore(10000, '\n');
+
+			}
+
+			unsigned short rate;
+			while (true) {
+				std::cout << std::endl << "Input track rating: " << std::endl;
+				if (std::cin >> rate)
+					break;
+				std::cout << std::endl << "Input error! Try again." << std::endl;
+				std::cin.clear();
+				std::cin.ignore(10000, '\n');
+			}
+
+			PL.new_last(new Track(name, time, style, rate));
+			system("cls");
+			print_selector(select);
+			PL.print();
+			page = Page::PLAYLIST;
+			break;
 		}
 
-		unsigned time;
-		while (true) {
-			std::cout << std::endl << "Input track time: " << std::endl;
-			if (std::cin >> time)
-				break;
-			std::cout << std::endl << "Input error! Try again." << std::endl;
-			std::cin.clear();
-			std::cin.ignore(10000, '\n');
+		case Page::DEL:
+			system("cls");
+			track_selector(PL);
+			system("cls");
+			print_selector(select);
+			PL.print();
+			page = Page::PLAYLIST;
+			break;
 
 
+		case Page::REPORT: {
+			auto [PL_time, PL_rate] = PL.report();
+			system("cls");
+			print_selector(select);
+			std::cout << std::endl << "Playlist time " << PL_time << "s and rating " << PL_rate << std::endl;
+			break;
 		}
 
-		std::string style;
-		while (true) {
-			std::cout << std::endl << "Input track style: " << std::endl;
-			if (std::cin.peek() == '\n')
-				std::cin.ignore();
-			if (std::getline(std::cin, style))
-				break;
-			std::cout << std::endl << "Input error! Try again." << std::endl;
-			std::cin.clear();
-			std::cin.ignore(10000, '\n');
+		case Page::FIND_TIME: {
+			size_t start, end;
 
+			while (true) {
+				std::cout << std::endl << "Input Min Time: " << std::endl;
+				if (std::cin >> start)
+					break;
+				std::cout << std::endl << "Input error! Try again." << std::endl;
+				std::cin.clear();
+				std::cin.ignore(10000, '\n');
+			}
+
+			while (true) {
+				std::cout << std::endl << "Input Max Time: " << std::endl;
+				if (std::cin >> end)
+					break;
+				std::cout << std::endl << "Input error! Try again." << std::endl;
+				std::cin.clear();
+				std::cin.ignore(10000, '\n');
+			}
+
+			Playlist temp;
+
+			Node* current = PL.first;
+			for (int j = 0; j < PL.get_size() - 1; j++) {
+				current = current->next;
+				if (start <= current->data->time && current->data->time <= end)
+					temp.new_last(current->data);
+			}
+
+			system("cls");
+			print_selector(select);
+			std::cout << std::endl << "Tracks in time range." << std::endl;
+			temp.print();
+			temp.clear();
+			page = Page::NOTHING;
+			break;
 		}
 
-		unsigned short rate;
-		while (true) {
-			std::cout << std::endl << "Input track rating: " << std::endl;
-			if (std::cin >> rate)
-				break;
-			std::cout << std::endl << "Input error! Try again." << std::endl;
-			std::cin.clear();
-			std::cin.ignore(10000, '\n');
+		case Page::SAVE:
+			system("cls");
+			print_selector(select);
+			std::cout << std::endl << "Saved successfully!" << std::endl;
+			break;
 
-		}
-
-		PL.new_last(new Track(name, time, style, rate));
-		system("cls");
-		print_selector(select);
-		PL.print();
-		page = Page::PLAYLIST;
-		break;
-	}
-
-	case Page::DEL:
-		system("cls");
-		track_selector(PL);
-		system("cls");
-		print_selector(select);
-		PL.print();
-		page = Page::PLAYLIST;
-		break;
+		case Page::LOAD:
+			system("cls");
+			print_selector(select);
+			std::cout << std::endl << "Load successfully!" << std::endl;
+			PL.print();
+			page = Page::PLAYLIST;
+			break;
 	}
 }
-
 
 void menu_selector(Playlist& PL) {
 	size_t select = 0;
@@ -209,6 +291,8 @@ void menu_selector(Playlist& PL) {
 				if (PL.first == nullptr)
 					page = Page::EMPTY;
 				else {
+					if (current == nullptr)
+						current = PL.first;
 					if (!PL.repeat_tr) {
 						if (current->next)
 							current = current->next;
@@ -223,6 +307,8 @@ void menu_selector(Playlist& PL) {
 				if (PL.first == nullptr)
 					page = Page::EMPTY;
 				else {
+					if (current == nullptr)
+						current = PL.first;
 					if (!PL.repeat_tr && PL.first) {
 						if (current->prev)
 							current = current->prev;
@@ -277,20 +363,25 @@ void menu_selector(Playlist& PL) {
 				// Delete track
 				page = Page::DEL;
 				break;
+			case 10:
+				// Playlist report
+				page = Page::REPORT;
+				break;
+			case 11:
+				// Find by Time
+				page = Page::FIND_TIME;
+				break;
+			case 12:
+				// Save
+				PL.save_to_file();
+				page = Page::SAVE;
+				break;
+			case 13:
+				// Load
+				PL.load_from_file();
+				page = Page::LOAD;
+				break;
 			}
-		}
-	}
-}
-
-void track_selector(Playlist& PL) {
-	size_t select = 0;
-	Node* current = PL.first;
-	while (1) {
-		system("cls");
-		print_selector(select, PL);
-		if (move(select, PL.get_size())) {
-			PL.del_track(select);
-			return;
 		}
 	}
 }

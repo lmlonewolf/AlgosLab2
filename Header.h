@@ -1,8 +1,11 @@
 #pragma once
 
 #include <iostream>
+#include <fstream>
 #include <string>
 #include <format>
+#include <tuple> 
+
 
 
 struct Track {
@@ -39,14 +42,17 @@ public:
 	bool repeat_pl = false;
 	bool repeat_tr = false;
 
+	void clear(void);
 
 	void print(void);
 
 	size_t get_size(void);
 
+
 	void new_front(Track* track);
 
 	void new_last(Track* track);
+
 
 	bool del_track(std::string track_name);
 
@@ -56,7 +62,15 @@ public:
 
 	bool del_track(size_t number);
 
+
 	void shuffle(void);
+
+	std::tuple <int, int> report(void);
+
+
+	void save_to_file();
+
+	void load_from_file();
 };
 
 
@@ -67,6 +81,6 @@ int move(size_t& select, size_t size);
 int randint(int min, int max);
 
 
+std::string base64_encode(const std::string& in);
 
-
-void track_selector(Playlist& PL);
+std::string base64_decode(const std::string& in);

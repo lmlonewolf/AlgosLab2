@@ -1,5 +1,5 @@
 #include "Header.h"
-
+#include <sstream>
 
 Track::Track(void) {};
 Track::Track(std::string name, unsigned time, std::string style, unsigned short rate) : name{ name }, time{ time }, style{ style }, rate{ rate } {}
@@ -21,6 +21,17 @@ Node::Node(void) {
 	this->data = new Track();
 }
 Node::Node(Track* data) : data{ data } {}
+
+
+void Playlist::clear(void) {
+	Node* current = first;
+	Node* next = nullptr;
+	for (int j = 0; j < size; j++) {
+		next = current->next;
+		delete current;
+		current = next;
+	}
+}
 
 
 void Playlist::print() {
@@ -209,4 +220,51 @@ void Playlist::shuffle(void) {
 
 		delete current;
 	}
+}
+
+std::tuple <int, int> Playlist::report(void) {
+	return std::make_tuple(sum_time, sum_rate / static_cast<int> (size));
+}
+
+void Playlist::save_to_file() {
+	std::ofstream out("data.b");
+	if (!out) return;
+
+	Node* current = first;
+	while (current) {
+
+		std::string raw = current->data->name + "|" +
+			std::to_string(current->data->time) + "|" +
+			current->data->style + "|" +
+			std::to_string(current->data->rate);
+
+		out << base64_encode(raw) << "\n";
+		current = current->next;
+	}
+	out.close();
+}
+
+void Playlist::load_from_file() {
+	std::ifstream in("data.b");
+	if (!in) return;
+
+	std::string b64line;
+	while (std::getline(in, b64line)) {
+		if (b64line.empty()) continue;
+
+		std::string raw = base64_decode(b64line);
+
+		std::stringstream ss(raw);
+		std::string name, style, t_time, t_rate;
+
+		std::getline(ss, name, '|');
+		std::getline(ss, t_time, '|');
+		std::getline(ss, style, '|');
+		std::getline(ss, t_rate, '|');
+
+		if (!name.empty()) {
+			this->new_last(new Track(name, std::stoul(t_time), style, (unsigned short)std::stoi(t_rate)));
+		}
+	}
+	in.close();
 }
