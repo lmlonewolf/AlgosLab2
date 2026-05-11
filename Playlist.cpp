@@ -19,10 +19,12 @@ void Track::print(void) {
 }
 
 
+
 Node::Node(void) {
 	this->data = new Track();
 }
 Node::Node(Track* data) : data{ data } {}
+
 
 
 void Playlist::clear(void) {
@@ -147,6 +149,7 @@ bool Playlist::del_track(size_t number) {
 	sum_rate -= track->data->rate;
 	return true;
 }
+
 
 void Playlist::shuffle(void) {
 	for (int i = 0; i < size; i++) {

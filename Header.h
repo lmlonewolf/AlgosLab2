@@ -42,6 +42,7 @@ public:
 	bool repeat_pl = false;
 	bool repeat_tr = false;
 
+
 	void clear(void);
 
 	void print(void);
