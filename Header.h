@@ -25,7 +25,6 @@ struct Node {
 	Node* next = nullptr;
 
 	Node(void);
-	Node(Track& data);
 	Node(Track* data);
 };
 
@@ -43,9 +42,9 @@ public:
 
 	void print(void);
 
-	void new_front(Track& track);
+	void new_front(Track* track);
 
-	void new_last(Track& track);
+	void new_last(Track* track);
 
 	bool del_track(std::string track_name);
 

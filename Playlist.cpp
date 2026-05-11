@@ -20,9 +20,7 @@ void Track::print(void) {
 Node::Node(void) {
 	this->data = new Track();
 }
-Node::Node(Track& data) : data{ &data } {}
 Node::Node(Track* data) : data{ data } {}
-
 
 
 void Playlist::print() {
@@ -49,7 +47,7 @@ void Playlist::print() {
 }
 
 
-void Playlist::new_front(Track& track) {
+void Playlist::new_front(Track* track) {
 	Node* node = new Node(track);
 	size++;
 	if (!first) {
@@ -60,12 +58,12 @@ void Playlist::new_front(Track& track) {
 	node->next = first;
 	first->prev = node;
 	first = node;
-	sum_time += track.time;
-	sum_rate += track.rate;
+	sum_time += track->time;
+	sum_rate += track->rate;
 
 }
 
-void Playlist::new_last(Track& track) {
+void Playlist::new_last(Track* track) {
 	Node* node = new Node(track);
 	size++;
 	if (!last) {
@@ -76,8 +74,8 @@ void Playlist::new_last(Track& track) {
 	node->prev = last;
 	last->next = node;
 	last = node;
-	sum_time += track.time;
-	sum_rate += track.rate;
+	sum_time += track->time;
+	sum_rate += track->rate;
 }
 
 
@@ -172,7 +170,7 @@ void Playlist::shuffle(void) {
 		Node* current = first;
 		for (int j = 0; j < randint(0, size - 1 - i); j++)
 			current = current->next;
-		new_last(*(current->data));
+		new_last(current->data);
 		size--;
 		if (current->next)
 			current->next->prev = current->prev;
