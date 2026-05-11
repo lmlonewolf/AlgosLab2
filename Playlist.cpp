@@ -75,7 +75,6 @@ void Playlist::new_front(Track* track) {
 	first = node;
 	sum_time += track->time;
 	sum_rate += track->rate;
-
 }
 
 void Playlist::new_last(Track* track) {
@@ -94,68 +93,11 @@ void Playlist::new_last(Track* track) {
 }
 
 
-bool Playlist::del_track(std::string track_name) {
-	Node* track = first;
-
-	while (track != nullptr) {
-		if (track->data->name == track_name) {
-
-			if (track->prev)
-				track->prev->next = track->next;
-			if (track->next)
-				track->next->prev = track->prev;
-			if (track == first)
-				first = track->next;
-			if (track == last)
-				last = track->prev;
-
-			track->next = nullptr;
-			track->prev = nullptr;
-
-			size--;
-			sum_time -= track->data->time;
-			sum_rate -= track->data->rate;
-
-			return true;
-		}
-		track = track->next;
-	}
-	return false;
-}
-
 bool Playlist::del_track(Track& target) {
 	Node* track = first;
 
 	while (track != nullptr) {
 		if (track->data == &target) {
-
-			if (track->prev)
-				track->prev->next = track->next;
-			if (track->next)
-				track->next->prev = track->prev;
-			if (track == first)
-				first = track->next;
-			if (track == last)
-				last = track->prev;
-
-			track->next = nullptr;
-			track->prev = nullptr;
-
-			size--;
-			sum_time -= track->data->time;
-			sum_rate -= track->data->rate;
-			return true;
-		}
-		track = track->next;
-	}
-	return false;
-}
-
-bool Playlist::del_track(Node& target) {
-	Node* track = first;
-
-	while (track != nullptr) {
-		if (track->data == target.data) {
 
 			if (track->prev)
 				track->prev->next = track->next;
