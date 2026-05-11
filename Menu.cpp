@@ -7,6 +7,7 @@ enum class Page {
 	TRACK,
 	REP_TR,
 	REP_PL,
+	REP_NO,
 	SHUFFLE,
 	NEW,
 	DEL,
@@ -14,15 +15,15 @@ enum class Page {
 	NOTHING
 };
 
-const std::string options[] = { "Print playlist", "Play", "Next", "Prev", "Repeat track", "Repeat playlist", "Shuffle playlist", "New track", "Delete track" };
-unsigned short menu_size = 9;
+const std::string options[] = { "Print playlist", "Play", "Next", "Prev", "Repeat track", "Repeat playlist", "Don't repeat", "Shuffle playlist", "New track", "Delete track" };
+unsigned short menu_size = 10;
 Page page = Page::NOTHING;
 
 
 void print_selector(int select) {
 	for (int i = 0; i < menu_size; i++) {
 		if (i == select)
-			std::cout << "-> " << options[i] << std::endl;
+			std::cout << "\033[0;32m->\033[0m " << options[i] << std::endl;
 		else
 			std::cout << options[i] << std::endl;
 	}
@@ -31,7 +32,6 @@ void print_selector(int select) {
 
 void menu(int select, Playlist& PL, Node* current) {
 	system("cls");
-
 	switch (page) {
 	case Page::NOTHING:
 		print_selector(select);
@@ -65,6 +65,11 @@ void menu(int select, Playlist& PL, Node* current) {
 			std::cout << std::endl << "PLAYLIST will BE repeated." << std::endl;
 		else
 			std::cout << std::endl << "PLAYLIST will NOT repeated." << std::endl;
+		break;
+
+	case Page::REP_NO:
+		print_selector(select);
+		std::cout << std::endl << "Repeat is disabled." << std::endl;
 		break;
 
 	case Page::SHUFFLE:
@@ -182,6 +187,7 @@ void menu_selector(Playlist& PL) {
 					page = Page::EMPTY;
 				else {
 					PL.repeat_tr = !PL.repeat_tr;
+					PL.repeat_pl = false;
 					page = Page::REP_TR;
 				}
 				break;
@@ -191,10 +197,17 @@ void menu_selector(Playlist& PL) {
 					page = Page::EMPTY;
 				else {
 					PL.repeat_pl = !PL.repeat_pl;
+					PL.repeat_tr = false;
 					page = Page::REP_PL;
 				}
 				break;
+
 			case 6:
+				PL.repeat_tr = false;
+				PL.repeat_pl = false;
+				page = Page::REP_NO;
+				break;
+			case 7:
 				// Suffle
 				if (PL.first == nullptr)
 					page = Page::EMPTY;
@@ -204,11 +217,11 @@ void menu_selector(Playlist& PL) {
 					page = Page::SHUFFLE;
 				}
 				break;
-			case 7:
+			case 8:
 				// New track
 				page = Page::NEW;
 				break;
-			case 8:
+			case 9:
 				// Delete track
 				break;
 			}
