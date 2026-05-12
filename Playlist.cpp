@@ -156,8 +156,6 @@ void Playlist::shuffle(void) {
 		Node* current = first;
 		for (int j = 0; j < randint(0, size - 1 - i); j++)
 			current = current->next;
-		new_last(current->data);
-		size--;
 		if (current->next)
 			current->next->prev = current->prev;
 		if (current->prev)
@@ -165,7 +163,10 @@ void Playlist::shuffle(void) {
 		if (current == first)
 			first = current->next;
 
-		delete current;
+		current->prev = last;
+		last->next = current;
+		current->next = nullptr;
+		last = current;
 	}
 }
 
