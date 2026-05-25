@@ -40,7 +40,7 @@ Page page = Page::NOTHING;
 size_t select = 0;
 
 
-void print_selector(size_t select) {
+static void print_selector(size_t select) {
 	for (int i = 0; i < menu_size; i++) {
 		if (i == select)
 			std::cout << "\033[0;32m->\033[0m " << options[i] << std::endl;
@@ -49,7 +49,7 @@ void print_selector(size_t select) {
 	}
 }
 
-void print_selector(size_t select, Playlist& PL) {
+static void print_selector(size_t select, Playlist& PL) {
 
 	Node* current = PL.first;
 
@@ -64,9 +64,8 @@ void print_selector(size_t select, Playlist& PL) {
 	}
 }
 
-void track_selector(Playlist& PL) {
+static void track_selector(Playlist& PL) {
 	size_t select = 0;
-	Node* current = PL.first;
 	while (true) {
 		system("cls");
 		print_selector(select, PL);
@@ -78,7 +77,7 @@ void track_selector(Playlist& PL) {
 }
 
 
-void menu(size_t select, Playlist& PL, Node* current) {
+static void menu(size_t select, Playlist& PL, Node* current) {
 	system("cls");
 	switch (page) {
 		case Page::NOTHING:

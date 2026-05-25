@@ -1,5 +1,3 @@
-#pragma once
-
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -55,11 +53,8 @@ public:
 	void new_last(Track* track);
 
 
-	bool del_track(std::string track_name);
 
 	bool del_track(Track& target);
-
-	bool del_track(Node& target);
 
 	bool del_track(size_t number);
 
